@@ -16,7 +16,7 @@
 
 ## Installation
 
-```bash
+```text
 git clone https://github.com/joshuasundance-swca/aprx_explorer.git
 cd aprx_explorer
 pip install .
