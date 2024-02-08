@@ -9,6 +9,9 @@
 ## Optional (for summaries)
 
 * `langchain`
+  - `langchain_community`
+  - `langchain_core`
+  - `langchain_openai`
 * `openai`
 
 ## Installation
@@ -18,7 +21,7 @@ git clone https://github.com/joshuasundance-swca/aprx_explorer.git
 cd aprx_explorer
 pip install .
 
-# or to install langchain and openai for summarization:
+# or to install optional dependencies for summarization:
 # pip install .[summarize]
 ```
 
@@ -26,7 +29,7 @@ pip install .
 
 ### See Help
 ```bash
-usage: __main__.py [-h] [--openai_api_key OPENAI_API_KEY] [--model MODEL] [--summarize] aprx output
+usage: aprx_explorer [-h] [--openai_api_key OPENAI_API_KEY] [--model MODEL] [--summarize] aprx output
 
 Extract geoprocessing history objects from an ArcGIS Pro project file.
 

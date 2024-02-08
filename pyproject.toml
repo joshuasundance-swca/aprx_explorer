@@ -38,6 +38,7 @@ dev = [
     "pre-commit",
 ]
 summarize = [
+    "openai",
     "langchain",
     "langchain_community",
     "langchain_core",
