@@ -45,7 +45,7 @@ def main() -> None:
     history = GPHistory.history_from_aprx(args.aprx)
     if args.summarize:
         from langchain_openai.chat_models import ChatOpenAI
-        from summarize import add_summaries
+        from aprx_explorer.summarize import add_summaries
 
         llm = ChatOpenAI(
             model=args.model,
