@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["aprx_explorer"]
+
+[project]
+name = "aprx_explorer"
+version = "0.0.1"
+description = ""
+authors = [{ name = "Joshua Sundance Bailey" }]
+readme = "README.md"
+
+dependencies = [
+    "beautifulsoup4",
+    "pandas",
+    "pydantic",
+]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["github", "secrets"]
+[project.urls]
+Homepage = "https://github.com/joshuasundance-swca/aprx_explorer"
+
+
+[project.scripts]
+aprx_explorer = "aprx_explorer.__main__:main"
+
+[project.optional-dependencies]
+dev = [
+    "bumpver",
+    "pre-commit",
+]
+summarize = [
+    "langchain",
+    "langchain_community",
+    "langchain_core",
+    "langchain_openai",
+]
+
+[tool.bumpver]
+current_version = "0.0.1"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "Bump version {old_version} -> {new_version}"
+commit = true
+tag_message = "{new_version}"
+tag_scope = "default"
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = ['current_version = "{version}"', 'version = "{version}"']
+"aprx_explorer/__init__.py" = ['__version__ = "{version}"']

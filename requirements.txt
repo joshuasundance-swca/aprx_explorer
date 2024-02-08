@@ -1,0 +1,7 @@
+beautifulsoup4
+langchain
+langchain_community
+langchain_core
+langchain_openai
+pandas
+pydantic
