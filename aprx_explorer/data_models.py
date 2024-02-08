@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import typing
 import zipfile
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
@@ -39,7 +38,7 @@ class GPHistory(BaseModel):
         }
 
     @classmethod
-    def history_from_aprx(cls, aprx: str) -> typing.Iterable[GPHistory]:
+    def history_from_aprx(cls, aprx: str) -> list[GPHistory]:
         """Extracts geoprocessing history objects from an ArcGIS Pro project file."""
         # an aprx is a zipfile
         with zipfile.ZipFile(aprx) as zipfile_obj:
@@ -48,43 +47,38 @@ class GPHistory(BaseModel):
                 json_str = file_obj.read()
                 json_dict = json.loads(json_str)
         project_items = json_dict["projectItems"]
-        history_objects = (
+        history_objects = [
             item for item in project_items if item.get("itemType") == "GPHistory"
-        )
-        return (cls.model_validate(d) for d in history_objects)
+        ]
+        return [cls.model_validate(d) for d in history_objects]
 
     @classmethod
-    def history_to_df(cls, history: typing.Iterable[GPHistory]) -> pd.DataFrame:
-        starting_cols = [
-            "start_time",
-            "end_time",
-            "name",
-            "run_duration",
-            "text",
-            "iD",
-            "catalogPath",
-            "propertiesXML",
-            "type",
-            "itemType",
-            "sourceModifiedTime",
-        ]
+    def history_to_df(cls, history: list[GPHistory]) -> pd.DataFrame:
+        # starting_cols = [
+        #     "start_time",
+        #     "end_time",
+        #     "name",
+        #     "run_duration",
+        #     "text",
+        #     "iD",
+        #     "catalogPath",
+        #     "propertiesXML",
+        #     "type",
+        #     "itemType",
+        #     "sourceModifiedTime",
+        # ]
 
-        df = pd.DataFrame(
-            h.model_dump(exclude_unset=True, exclude_defaults=True, exclude_none=True)
-            for h in history
-        )
+        df = pd.DataFrame([h.model_dump() for h in history])
 
-        print(df)
-
-        cols_in_df = [c for c in starting_cols if c in df.columns]
-        other_cols = sorted(c for c in df.columns if c not in starting_cols)
-        cols = cols_in_df + other_cols
+        # cols_in_df = [c for c in starting_cols if c in df.columns]
+        # other_cols = sorted(c for c in df.columns if c not in starting_cols)
+        # cols = cols_in_df + other_cols
 
         df = (
-            df[cols]
-            .sort_values("end_time")
-            .reset_index(drop=True)
-            .dropna(axis=1, how="all")
+            df  # [cols]
+            # .sort_values("end_time")
+            # .reset_index(drop=True)
+            # .dropna(axis=1, how="all")
         )
 
         return df

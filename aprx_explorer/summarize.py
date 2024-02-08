@@ -1,5 +1,3 @@
-import typing
-
 from langchain.chat_models.base import BaseChatModel
 from langchain.schema.runnable import Runnable
 from langchain_core.output_parsers import StrOutputParser
@@ -46,16 +44,16 @@ def get_chain(
 
 
 def add_summaries(
-    history: typing.Iterable[GPHistory],
+    history: list[GPHistory],
     llm: BaseChatModel,
     system_message: str = default_system_message,
     human_message: str = default_human_message,
 ) -> list[GPHistory]:
     chain = get_chain(llm, system_message, human_message)
-    responses = chain.batch(list(history))
+    responses = chain.batch(history)
     return [
         GPHistory(
-            **h.model_dump(),
+            **h.model_dump(exclude=["text"]),
             text=response,
         )
         for h, response in zip(history, responses)

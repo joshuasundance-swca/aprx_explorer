@@ -2,7 +2,19 @@ import argparse
 import os
 from getpass import getpass
 
+import pandas as pd
+
 from aprx_explorer.data_models import GPHistory
+
+try:
+    from langchain_openai.chat_models import ChatOpenAI
+    from aprx_explorer.summarize import add_summaries
+
+    SUMMARIZE_AVAILABLE = True
+    SUMMARIZE_IMPORTERROR = None
+except ImportError as e:
+    SUMMARIZE_AVAILABLE = False
+    SUMMARIZE_IMPORTERROR = e
 
 
 def get_args() -> argparse.Namespace:
@@ -39,29 +51,49 @@ def get_args() -> argparse.Namespace:
     return args
 
 
-def main() -> None:
-    args = get_args()
-    print(f"Reading {args.aprx}...")
-    history = GPHistory.history_from_aprx(args.aprx)
-    if args.summarize:
-        from langchain_openai.chat_models import ChatOpenAI
-        from aprx_explorer.summarize import add_summaries
-
+def _main(
+    aprx: str,
+    output: str,
+    summarize: bool = False,
+    model: str = "gpt-4-0125-preview",
+    openai_api_key: str = "",
+) -> pd.DataFrame:
+    print(f"Reading {aprx}...")
+    history = GPHistory.history_from_aprx(aprx)
+    if summarize:
+        if SUMMARIZE_IMPORTERROR is not None:
+            raise ImportError(
+                "Dependencies for summarization are not installed. "
+                "Use `pip install aprx_explorer[summarize]` to install them, "
+                "or run without the `--summarize` flag.",
+            ) from SUMMARIZE_IMPORTERROR
         llm = ChatOpenAI(
-            model=args.model,
-            openai_api_key=args.openai_api_key or getpass("OpenAI API Key: "),  # type: ignore
+            model_name=model,
+            openai_api_key=openai_api_key or getpass("OpenAI API Key: "),  # type: ignore
         )
         history = add_summaries(history, llm)
     df = GPHistory.history_to_df(history)
     print(df["name"].value_counts())
     print(df[["start_time", "end_time", "run_duration"]].describe())
-    _, ext = os.path.splitext(args.output)
+    _, ext = os.path.splitext(output)
     ext = ext.lower().strip(".")
     if ext == "csv":
-        df.to_csv(args.output, index=False)
+        df.to_csv(output, index=False)
     elif ext in ("parquet", "pq"):
-        df.to_parquet(args.output, index=False)
-    print(f"Output saved to {args.output}")
+        df.to_parquet(output, index=False)
+    print(f"Output saved to {output}")
+    return df
+
+
+def main() -> None:
+    args = get_args()
+    _ = _main(
+        aprx=args.aprx,
+        output=args.output,
+        summarize=args.summarize,
+        model=args.model,
+        openai_api_key=args.openai_api_key,
+    )
 
 
 if __name__ == "__main__":
