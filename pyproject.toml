@@ -8,7 +8,7 @@ packages = ["aprx_explorer"]
 [project]
 name = "aprx_explorer"
 version = "0.0.1"
-description = ""
+description = "tool for creating a tabular history of an ArcGIS Pro project, with optional LLM-generated text summaries"
 authors = [{ name = "Joshua Sundance Bailey" }]
 readme = "README.md"
 
