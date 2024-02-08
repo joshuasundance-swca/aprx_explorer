@@ -16,7 +16,7 @@
 
 ## Installation
 
-```text
+```bash
 git clone https://github.com/joshuasundance-swca/aprx_explorer.git
 cd aprx_explorer
 pip install .
@@ -28,7 +28,7 @@ pip install .
 ## Usage
 
 ### See Help
-```bash
+```text
 usage: aprx_explorer [-h] [--openai_api_key OPENAI_API_KEY] [--model MODEL] [--summarize] aprx output
 
 Extract geoprocessing history objects from an ArcGIS Pro project file.
